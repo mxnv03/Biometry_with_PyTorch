@@ -42,7 +42,6 @@ def watch():
         print('Start of detection')
         source = request.args.get('video').replace("{'", "").replace("'}", "")
         url = request.args.get('url').replace("{'", "").replace("'}", "")
-        #print(source, url)
         x = threading.Thread(target=RunTrack.run, args=(source, url, os.getcwd(),), daemon=True)
         x.start()
     else:
