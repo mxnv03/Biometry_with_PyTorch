@@ -1,13 +1,14 @@
-import os, shutil
+import os
+import shutil
+import threading
 import time
 
-from flask import Flask, render_template, Response, request, redirect, url_for
 import cv2
+from flask import Flask, render_template, Response, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
 import config
 from Yolov5_DeepSort_Pytorch import RunTrack
-import threading
-from werkzeug.utils import secure_filename
-import glob
 
 app = Flask(__name__)
 
@@ -37,7 +38,7 @@ def video_feed():
 
 @app.route('/watch')
 def watch():
-    if config.AI == False:
+    if not config.AI:
         config.AI = True
         print('Start of detection')
         source = request.args.get('video').replace("{'", "").replace("'}", "")
@@ -64,7 +65,7 @@ def index():
     return render_template('index.html')
 
 
-def clearFolder():
+def clear_folder():
     folder = os.getcwd() + '/Photos'
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
@@ -80,7 +81,5 @@ def clearFolder():
 if __name__ == '__main__':
     UPLOAD_FOLDER = os.getcwd() + '/Videos'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-    clearFolder()
-
+    clear_folder()
     app.run(debug=True, port=8000)

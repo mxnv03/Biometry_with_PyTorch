@@ -2,19 +2,21 @@ import argparse
 import os
 import shutil
 import sys
+from pathlib import Path
+
 import cv2
 import torch
-import config
 import torch.backends.cudnn as cudnn
+
+import config
+from deep_sort.deep_sort import DeepSort
+from deep_sort.utils.parser import get_config
 from yolov5.models.common import DetectMultiBackend
 from yolov5.utils.datasets import LoadImages, LoadStreams, VID_FORMATS
 from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, scale_coords,
                                   check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr)
-from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.plots import Annotator, colors, save_one_box
-from deep_sort.utils.parser import get_config
-from deep_sort.deep_sort import DeepSort
-from pathlib import Path
+from yolov5.utils.torch_utils import select_device, time_sync
 
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
@@ -23,7 +25,6 @@ os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
 sys.path.insert(0, './yolov5')
-
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 deepsort root directory
@@ -40,19 +41,16 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 # cursor = connection.cursor()
 
-def write_one(item):
+def write_one():
     pass
-    # video_id, time, frame, face_id, \
-    # box_x, box_y, box_width, box_height = item[0], item[1], \
-    #                                      item[2], item[3], item[4], item[5], item[6], item[7]
-    # cursor.execute(
-    #    'INSERT INTO public.info(video_id, time, frame, face_id, "box-x", "box-y", "box-width", "box-height") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);',
-    #    (int(video_id), float(time), int(frame), int(face_id), int(box_x), int(box_y), int(box_width),
-    #     int(box_height)))
+    # video_id, time, frame, face_id, \ box_x, box_y, box_width, box_height = item[0], item[1], \ item[2], item[3],
+    # item[4], item[5], item[6], item[7] cursor.execute( 'INSERT INTO public.info(video_id, time, frame, face_id,
+    # "box-x", "box-y", "box-width", "box-height") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);', (int(video_id),
+    # float(time), int(frame), int(face_id), int(box_x), int(box_y), int(box_width), int(box_height)))
     # connection.commit()
 
 
-def write(items):
+def write():
     pass
     # if isinstance(items[0], list):
     #    for i in range(len(items)):
@@ -108,7 +106,7 @@ def detect(opt):
         model.model.half() if half else model.model.float()
 
     # Set Dataloader
-    vid_path, vid_writer = None, None
+    _, vid_writer = None, None
     # Check if environment supports image displays
     if show_vid:
         show_vid = check_imshow()
@@ -266,7 +264,7 @@ def detect(opt):
             # dbItem is 2-d list
             # It consist of Video-Id, time, frame, face-index, box-x, box-y, box-width, box-height
             if dbItem:
-                write(dbItem)
+                write()
 
             if show_vid:
                 cv2.imshow(str(p), im0)
