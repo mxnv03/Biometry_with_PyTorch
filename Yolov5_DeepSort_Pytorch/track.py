@@ -3,11 +3,9 @@ import os
 import shutil
 import sys
 from pathlib import Path
-
 import cv2
 import torch
 import torch.backends.cudnn as cudnn
-
 import config
 from deep_sort.deep_sort import DeepSort
 from deep_sort.utils.parser import get_config
