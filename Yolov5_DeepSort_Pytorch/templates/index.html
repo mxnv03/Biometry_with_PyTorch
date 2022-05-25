@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Biometry</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body style="text-align: center;">
+    <div style="">
+        <form action="" enctype="multipart/form-data" method="post">
+            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-bottom: 50px;">
+                <img style='width:150px;' src="https://www.genbank.ru/images/novosti/news_04-07-2019.png" alt="Logo">
+                <h1 style="color: #0d6efd;">Biometry</h1>
+            </div>
+
+            <div style="display: flex; flex-direction:row; justify-content:space-between; height: 58vh;">
+                <div style="width:50%;">
+                    <p>
+                        <h2>Видео с  компьютера</h2>
+                    </p>
+
+                    <p>
+                        <label  for="file"> </label>
+                        <input class="" style="" type="file" name="file">
+                        <input type="submit" value="Detect" name="FileGet" class="btn btn-primary">
+                    </p>
+                </div>
+                <div style="width: 50%;" >
+                    <p>
+                        <h2>Видео с  YouTube</h2>
+                    </p>
+                    <div style="display:flex; justify-content: center;">
+                        <label for="youtube"></label>
+                        <input style='width:40%; margin-right: 15px;' type="url" name="youtube" class="form-control" placeholder="Вставьте URL видео Youtube">
+                        <input type="submit" value="Detect" name="YoutubeGet" class="btn btn-primary"   >
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <footer style="height:107px; background-color: #0d6efd;">
+        <h2 style="     color: white;"></h2>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>
