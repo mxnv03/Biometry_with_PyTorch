@@ -2,11 +2,9 @@ import os
 import shutil
 import threading
 import time
-
 import cv2
 from flask import Flask, render_template, Response, request, redirect, url_for
 from werkzeug.utils import secure_filename
-
 import config
 from Yolov5_DeepSort_Pytorch import RunTrack
 
