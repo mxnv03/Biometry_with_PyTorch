@@ -1,19 +1,10 @@
 import argparse
-import config
-import cv2
 import os
-import psycopg2
 import shutil
 import sys
+import cv2
 import torch
-
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
-
-sys.path.insert(0, './yolov5')
+import config
 import torch.backends.cudnn as cudnn
 from yolov5.models.common import DetectMultiBackend
 from yolov5.utils.datasets import LoadImages, LoadStreams, VID_FORMATS
@@ -25,38 +16,48 @@ from deep_sort.utils.parser import get_config
 from deep_sort.deep_sort import DeepSort
 from pathlib import Path
 
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+sys.path.insert(0, './yolov5')
+
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 deepsort root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-#connection = psycopg2.connect(user="postgres",  # подключени к бд
-                              #password="123456789",
-                              #host="127.0.0.1",
-                              #port="5050",
-                              #database="biometry_info")
 
-#cursor = connection.cursor()
+# connection = psycopg2.connect(user="postgres",  # подключени к бд
+# password="123456789",
+# host="127.0.0.1",
+# port="5050",
+# database="biometry_info")
+
+# cursor = connection.cursor()
 
 def write_one(item):
     pass
-    #video_id, time, frame, face_id, \
-    #box_x, box_y, box_width, box_height = item[0], item[1], \
+    # video_id, time, frame, face_id, \
+    # box_x, box_y, box_width, box_height = item[0], item[1], \
     #                                      item[2], item[3], item[4], item[5], item[6], item[7]
-    #cursor.execute(
+    # cursor.execute(
     #    'INSERT INTO public.info(video_id, time, frame, face_id, "box-x", "box-y", "box-width", "box-height") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);',
     #    (int(video_id), float(time), int(frame), int(face_id), int(box_x), int(box_y), int(box_width),
     #     int(box_height)))
-    #connection.commit()
+    # connection.commit()
 
 
 def write(items):
     pass
-    #if isinstance(items[0], list):
+    # if isinstance(items[0], list):
     #    for i in range(len(items)):
     #        write_one(items[i])
-    #else:
+    # else:
     #    write_one(items)
 
 
@@ -184,7 +185,7 @@ def detect(opt):
                 if source.endswith(VID_FORMATS):
                     txt_file_name = p.stem
                     save_path = str(save_dir / p.name)  # im.jpg, vid.mp4, ...
-                # folder with imgs
+                # folder with imagess
                 else:
                     txt_file_name = p.parent.name  # get folder name containing current img
                     save_path = str(save_dir / p.parent.name)  # im.jpg, vid.mp4, ...
