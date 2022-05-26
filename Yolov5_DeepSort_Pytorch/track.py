@@ -7,6 +7,7 @@ import cv2
 import torch
 import torch.backends.cudnn as cudnn
 import config
+import psycopg2
 from deep_sort.deep_sort import DeepSort
 from deep_sort.utils.parser import get_config
 from yolov5.models.common import DetectMultiBackend
@@ -30,32 +31,33 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-
-connection = psycopg2.connect(user="postgres",  # подключени к бд
-password="123456789",
-host="127.0.0.1",
-port="5050",
-database="biometry_info"
+connection = psycopg2.connect(user="postgres", password="123456789",
+                              host="127.0.0.1", port="5432", database="biometry_info")
 cursor = connection.cursor()
 
+
 def write_one(item):
-    pass
-    faces = []
-    if face_id not in faces:
-        video_id, time, frame, face_id, box_x, box_y, box_width, box_height = item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7]
-        cursor.execute( 'INSERT INTO public.info(video_id, time, frame, face_id, "box-x", "box-y", "box-width", "box-height") '
-                        'VALUES (%s, %s, %s, %s, %s, %s, %s, %s);', (int(video_id),
-        float(time), int(frame), int(face_id), int(box_x), int(box_y), int(box_width), int(box_height)))
+    video_id, time, frame, face_id, box_x, box_y, box_width, box_height = item[0], item[1], \
+                                                                          item[2], int(item[3]), item[4], \
+                                                                          item[5], item[6], item[7]
+    faces = [1000000000]
+    if int(face_id) not in faces:
+        faces.append(int(face_id))
+        cursor.execute(
+            'INSERT INTO public.info(video_id, time, frame, face_id, "box-x", "box-y", "box-width", "box-height") '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s, %s);', (int(video_id),
+                                                         float(time), int(frame), int(face_id), int(box_x), int(box_y),
+                                                         int(box_width), int(box_height)))
         connection.commit()
 
 
+
 def write(items):
-    pass
     if isinstance(items[0], list):
-       for i in range(len(items)):
-           write_one(items[i])
+        for i in range(len(items)):
+            write_one(items[i])
     else:
-       write_one(items)
+        write_one(items)
 
 
 def detect(opt):
