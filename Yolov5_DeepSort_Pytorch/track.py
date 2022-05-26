@@ -49,7 +49,7 @@ def write_one(item):
         connection.commit()
 
 
-def write():
+def write(items):
     pass
     if isinstance(items[0], list):
        for i in range(len(items)):
@@ -235,7 +235,7 @@ def detect(opt):
                                                                bbox_top, bbox_w, bbox_h, -1, -1, -1, i))
 
                         if save_vid or save_crop or show_vid:  # Add bbox to image
-                            c = int(cls)  # integer class
+                            c = int(cls)
                             # LOGGER.info(c)
                             if c == 1:
                                 label = f'{id} {names[c]} {conf:.2f}'
@@ -245,8 +245,6 @@ def detect(opt):
                                     # LOGGER.info(save_dir)
                                     save_one_box(bboxes, imc, file=save_dir / 'crops' / txt_file_name / names[
                                         c] / f'{id}' / f'{p.stem}.jpg', BGR=True)
-
-                # LOGGER.info(f'{s}Done. YOLO:({t3 - t2:.3f}s), DeepSort:({t5 - t4:.3f}s)')
 
             else:
                 deepsort_list[i].increment_ages()
@@ -263,7 +261,7 @@ def detect(opt):
             # dbItem is 2-d list
             # It consist of Video-Id, time, frame, face-index, box-x, box-y, box-width, box-height
             if dbItem:
-                write()
+                write(dbItem)
 
             if show_vid:
                 cv2.imshow(str(p), im0)
