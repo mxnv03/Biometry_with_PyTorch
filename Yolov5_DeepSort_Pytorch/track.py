@@ -31,30 +31,31 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 
-# connection = psycopg2.connect(user="postgres",  # подключени к бд
-# password="123456789",
-# host="127.0.0.1",
-# port="5050",
-# database="biometry_info")
+connection = psycopg2.connect(user="postgres",  # подключени к бд
+password="123456789",
+host="127.0.0.1",
+port="5050",
+database="biometry_info"
+cursor = connection.cursor()
 
-# cursor = connection.cursor()
-
-def write_one():
+def write_one(item):
     pass
-    # video_id, time, frame, face_id, \ box_x, box_y, box_width, box_height = item[0], item[1], \ item[2], item[3],
-    # item[4], item[5], item[6], item[7] cursor.execute( 'INSERT INTO public.info(video_id, time, frame, face_id,
-    # "box-x", "box-y", "box-width", "box-height") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);', (int(video_id),
-    # float(time), int(frame), int(face_id), int(box_x), int(box_y), int(box_width), int(box_height)))
-    # connection.commit()
+    faces = []
+    if face_id not in faces:
+        video_id, time, frame, face_id, box_x, box_y, box_width, box_height = item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7]
+        cursor.execute( 'INSERT INTO public.info(video_id, time, frame, face_id, "box-x", "box-y", "box-width", "box-height") '
+                        'VALUES (%s, %s, %s, %s, %s, %s, %s, %s);', (int(video_id),
+        float(time), int(frame), int(face_id), int(box_x), int(box_y), int(box_width), int(box_height)))
+        connection.commit()
 
 
 def write():
     pass
-    # if isinstance(items[0], list):
-    #    for i in range(len(items)):
-    #        write_one(items[i])
-    # else:
-    #    write_one(items)
+    if isinstance(items[0], list):
+       for i in range(len(items)):
+           write_one(items[i])
+    else:
+       write_one(items)
 
 
 def detect(opt):
