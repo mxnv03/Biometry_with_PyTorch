@@ -32,37 +32,41 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 connection = psycopg2.connect(user="postgres", password="123456789",
-                              host="127.0.0.1", port="5432", database="biometry_info")
+                              host="127.0.0.1", port="5432", database="biometry_output")
 cursor = connection.cursor()
 
 
-def write_one(item):
-    video_id, time, frame, face_id, box_x, box_y, box_width, box_height = item[0], item[1], \
-                                                                          item[2], int(item[3]), item[4], \
-                                                                          item[5], item[6], item[7]
-    faces = [1000000000]
-    if int(face_id) not in faces:
-        faces.append(int(face_id))
-        cursor.execute(
-            'INSERT INTO public.info(video_id, time, frame, face_id, "box-x", "box-y", "box-width", "box-height") '
-            'VALUES (%s, %s, %s, %s, %s, %s, %s, %s);', (int(video_id),
-                                                         float(time), int(frame), int(face_id), int(box_x), int(box_y),
-                                                         int(box_width), int(box_height)))
-        connection.commit()
+def create_new_table(title):
+    cursor.execute(f'CREATE TABLE tables.{title} (time REAL,'
+                   f' frame INTEGER,'
+                   f' face_id INTEGER,'
+                   f' box_x INTEGER,'
+                   f' box_y INTEGER,'
+                   f' box_width INTEGER,'
+                   f' box_height INTEGER);')
+    connection.commit()
 
 
+faces = []
 
-def write(items):
-    if isinstance(items[0], list):
-        for i in range(len(items)):
-            write_one(items[i])
-    else:
-        write_one(items)
+
+def write(item, title):
+    global faces
+    for i in range(len(item)):
+        time, frame, face_id, box_x, box_y, box_width, box_height = item[i][0], item[i][1], \
+                                                                    item[i][2], item[i][3], item[i][4], \
+                                                                    item[i][5], item[i][6]
+        if int(face_id) not in faces:
+            faces.append(int(face_id))
+            cursor.execute(
+                f'INSERT INTO tables.{title} (time, frame, face_id, box_x, box_y, box_width, box_height) '
+                f'VALUES ({float(time)}, {int(frame)}, '
+                f'{int(face_id)}, {int(box_x)}, {int(box_y)}, {int(box_width)}, {int(box_height)});')
+            connection.commit()
 
 
 def detect(opt):
     config.AI = True
-    config.vidID += 1
     filename = 0
 
     out, source, yolo_model, deep_sort_model, show_vid, save_vid, save_txt, imgsz, evaluate, half, \
@@ -258,12 +262,11 @@ def detect(opt):
             cv2.imwrite(os.path.join('Photos', str(filename) + '.jpg'), im0)
             filename += 1
             cv2.waitKey(1)  # 1 millisecond
-            for item in range(len(dbItem)):
-                dbItem[item] = [config.vidID] + dbItem[item]
             # dbItem is 2-d list
             # It consist of Video-Id, time, frame, face-index, box-x, box-y, box-width, box-height
             if dbItem:
-                write(dbItem)
+                file = open('title.txt', 'r')
+                write(dbItem, file.readline())
 
             if show_vid:
                 cv2.imshow(str(p), im0)

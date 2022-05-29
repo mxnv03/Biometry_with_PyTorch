@@ -6,9 +6,17 @@ import cv2
 from flask import Flask, render_template, Response, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import config
+from youtube_dl import YoutubeDL
 from Yolov5_DeepSort_Pytorch import RunTrack
+from track import create_new_table
 
 app = Flask(__name__)
+
+def get_video_title(url):
+    with YoutubeDL({'quiet': True}) as ydl:
+        info_dict = ydl.extract_info(url, download=False)
+    title = info_dict.get('title', None).split()[0].replace(',', '')
+    return title
 
 
 def gen_frames():  # generate frame by frame from camera
@@ -19,7 +27,6 @@ def gen_frames():  # generate frame by frame from camera
         if img is not None:
             ret, buffer = cv2.imencode('.jpg', img)
             frame = buffer.tobytes()
-            # print(type(frame))
             time.sleep(0.04)
             os.remove(os.path.join('Photos', str(config.num) + '.jpg'))
             config.num += 1
@@ -51,13 +58,20 @@ def watch():
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    file_title = open('title.txt', 'w')
     if request.method == 'POST':
         if request.form.get("YoutubeGet"):
             youtube = request.form.get("youtube")
+            title = get_video_title(youtube)
+            file_title.write(title)
+            create_new_table(title)
             return redirect(url_for(f'watch', video={youtube}, url=True), 301)
         elif request.form.get("FileGet"):
             file = request.files['file']
+            filename_for_bd = file.filename.split()[0]
+            create_new_table(filename_for_bd)
             filename = secure_filename(file.filename)
+            file_title.write(filename_for_bd)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for(f'watch', video={filename}, url=False), 301)
     return render_template('index.html')
