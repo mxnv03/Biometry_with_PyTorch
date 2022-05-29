@@ -2,21 +2,16 @@ import os
 import shutil
 import threading
 import time
+from bd_connection import connection_check
+from video_title import get_video_title
 import cv2
 from flask import Flask, render_template, Response, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import config
-from youtube_dl import YoutubeDL
 from Yolov5_DeepSort_Pytorch import RunTrack
 from track import create_new_table
 
 app = Flask(__name__)
-
-def get_video_title(url):
-    with YoutubeDL({'quiet': True}) as ydl:
-        info_dict = ydl.extract_info(url, download=False)
-    title = info_dict.get('title', None).split()[0].replace(',', '')
-    return title
 
 
 def gen_frames():  # generate frame by frame from camera
@@ -64,12 +59,14 @@ def index():
             youtube = request.form.get("youtube")
             title = get_video_title(youtube)
             file_title.write(title)
-            create_new_table(title)
+            if connection_check():
+                create_new_table(title)
             return redirect(url_for(f'watch', video={youtube}, url=True), 301)
         elif request.form.get("FileGet"):
             file = request.files['file']
             filename_for_bd = file.filename.split()[0]
-            create_new_table(filename_for_bd)
+            if connection_check():
+                create_new_table(filename_for_bd)
             filename = secure_filename(file.filename)
             file_title.write(filename_for_bd)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))

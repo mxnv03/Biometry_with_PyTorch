@@ -7,6 +7,7 @@ import cv2
 import torch
 import torch.backends.cudnn as cudnn
 import config
+from bd_connection import connection_check
 import psycopg2
 from deep_sort.deep_sort import DeepSort
 from deep_sort.utils.parser import get_config
@@ -37,14 +38,15 @@ cursor = connection.cursor()
 
 
 def create_new_table(title):
-    cursor.execute(f'CREATE TABLE tables.{title} (time REAL,'
-                   f' frame INTEGER,'
-                   f' face_id INTEGER,'
-                   f' box_x INTEGER,'
-                   f' box_y INTEGER,'
-                   f' box_width INTEGER,'
-                   f' box_height INTEGER);')
-    connection.commit()
+    if connection_check():
+        cursor.execute(f'CREATE TABLE tables.{title} (time REAL,'
+                        f' frame INTEGER,'
+                        f' face_id INTEGER,'
+                        f' box_x INTEGER,'
+                        f' box_y INTEGER,'
+                        f' box_width INTEGER,'
+                        f' box_height INTEGER);')
+        connection.commit()
 
 
 faces = []
@@ -52,17 +54,18 @@ faces = []
 
 def write(item, title):
     global faces
-    for i in range(len(item)):
-        time, frame, face_id, box_x, box_y, box_width, box_height = item[i][0], item[i][1], \
-                                                                    item[i][2], item[i][3], item[i][4], \
-                                                                    item[i][5], item[i][6]
-        if int(face_id) not in faces:
-            faces.append(int(face_id))
-            cursor.execute(
-                f'INSERT INTO tables.{title} (time, frame, face_id, box_x, box_y, box_width, box_height) '
-                f'VALUES ({float(time)}, {int(frame)}, '
-                f'{int(face_id)}, {int(box_x)}, {int(box_y)}, {int(box_width)}, {int(box_height)});')
-            connection.commit()
+    if connection_check():
+        for i in range(len(item)):
+            time, frame, face_id, box_x, box_y, box_width, box_height = item[i][0], item[i][1], \
+                                                                        item[i][2], item[i][3], item[i][4], \
+                                                                        item[i][5], item[i][6]
+            if int(face_id) not in faces:
+                faces.append(int(face_id))
+                cursor.execute(
+                    f'INSERT INTO tables.{title} (time, frame, face_id, box_x, box_y, box_width, box_height) '
+                    f'VALUES ({float(time)}, {int(frame)}, '
+                    f'{int(face_id)}, {int(box_x)}, {int(box_y)}, {int(box_width)}, {int(box_height)});')
+                connection.commit()
 
 
 def detect(opt):
