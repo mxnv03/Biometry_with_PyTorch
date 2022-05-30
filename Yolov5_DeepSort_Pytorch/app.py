@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 import config
 from Yolov5_DeepSort_Pytorch import RunTrack
 from track import create_new_table
+from Yolov5_DeepSort_Pytorch.check_bd_title_free import is_title_free
 
 app = Flask(__name__)
 
@@ -60,13 +61,15 @@ def index():
             title = get_yt_video_title(youtube)
             file_title.write(title)
             if connection_check():
-                create_new_table(title)
+                if is_title_free(title):
+                    create_new_table(title)
             return redirect(url_for(f'watch', video={youtube}, url=True), 301)
         elif request.form.get("FileGet"):
             file = request.files['file']
             filename_for_bd = get_video_title(file.filename)
             if connection_check():
-                create_new_table(filename_for_bd)
+                if is_title_free(filename_for_bd):
+                    create_new_table(filename_for_bd)
             filename = secure_filename(file.filename)
             file_title.write(filename_for_bd)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))

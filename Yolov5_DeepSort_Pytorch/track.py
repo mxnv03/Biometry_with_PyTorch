@@ -54,18 +54,18 @@ def write(item, title):
         for i in range(len(item)):
             time, frame, face_id, box_x, box_y, box_width, box_height = item[i][0], item[i][1], \
                                                                         item[i][2], item[i][3], item[i][4], \
-                                                                        item[i][5], item[i][6]
-            if int(face_id) not in faces:
+                                                                        item[i][5], item[i][6]  # parametrs for writing
+            if int(face_id) not in faces:  # for writing only one face
                 faces.append(int(face_id))
                 cursor.execute(
                     f'INSERT INTO tables.{title} (time, frame, face_id, box_x, box_y, box_width, box_height) '
                     f'VALUES ({float(time)}, {int(frame)}, '
                     f'{int(face_id)}, {int(box_x)}, {int(box_y)}, {int(box_width)}, {int(box_height)});')
-                connection.commit()
+                connection.commit()  # saving changes
 
 
 def detect(opt):
-    config.AI = True
+    config.AI = True  # status of running (on/off)
     filename = 0
 
     out, source, yolo_model, deep_sort_model, show_vid, save_vid, save_txt, imgsz, evaluate, half, \
@@ -289,8 +289,8 @@ def detect(opt):
     config.num = 0
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
-    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
-        per image at shape {(1, 3, *imgsz)}' % t)
+    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update '
+                f'per image at shape {(1, 3, *imgsz)}' % t)
     if save_txt or save_vid:
         s = f"\n{len(list(save_dir.glob('tracks/*.txt')))} tracks saved to {save_dir / 'tracks'}" if save_txt else ''
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
