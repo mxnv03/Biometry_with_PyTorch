@@ -17,6 +17,7 @@ from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, s
                                   check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr)
 from yolov5.utils.plots import Annotator, colors, save_one_box
 from yolov5.utils.torch_utils import select_device, time_sync
+from Yolov5_DeepSort_Pytorch.bd_connection import connection, cursor
 
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
@@ -31,10 +32,6 @@ ROOT = FILE.parents[0]  # yolov5 deepsort root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
-
-connection = psycopg2.connect(user="postgres", password="123456789",
-                              host="127.0.0.1", port="5432", database="biometry_output")
-cursor = connection.cursor()
 
 
 def create_new_table(title):
