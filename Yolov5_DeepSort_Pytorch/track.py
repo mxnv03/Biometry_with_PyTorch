@@ -8,7 +8,6 @@ import torch
 import torch.backends.cudnn as cudnn
 import config
 from bd_connection import connection_check
-import psycopg2
 from deep_sort.deep_sort import DeepSort
 from deep_sort.utils.parser import get_config
 from yolov5.models.common import DetectMultiBackend
@@ -37,12 +36,12 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 def create_new_table(title):
     if connection_check():
         cursor.execute(f'CREATE TABLE tables.{title} (time REAL,'
-                        f' frame INTEGER,'
-                        f' face_id INTEGER,'
-                        f' box_x INTEGER,'
-                        f' box_y INTEGER,'
-                        f' box_width INTEGER,'
-                        f' box_height INTEGER);')
+                       f' frame INTEGER,'
+                       f' face_id INTEGER,'
+                       f' box_x INTEGER,'
+                       f' box_y INTEGER,'
+                       f' box_width INTEGER,'
+                       f' box_height INTEGER);')
         connection.commit()
 
 
@@ -199,7 +198,7 @@ def detect(opt):
 
             annotator = Annotator(im0, line_width=2, pil=not ascii)
 
-            dbItem = []
+            db_item = []
             if det is not None and len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
@@ -232,7 +231,7 @@ def detect(opt):
                         bbox_top = output[1]
                         bbox_w = output[2] - output[0]
                         bbox_h = output[3] - output[1]
-                        dbItem.append(
+                        db_item.append(
                             [round((frame_idx + 1) * 0.04, 2), frame_idx + 1, id, bbox_left, bbox_top, bbox_w, bbox_h])
                         # Write MOT compliant results to file
                         if save_txt:
@@ -263,9 +262,9 @@ def detect(opt):
             filename += 1
             print(filename)
             cv2.waitKey(1)  # 1 millisecond
-            if dbItem:
+            if db_item:
                 file = open('title.txt', 'r')
-                write(dbItem, file.readline())
+                write(db_item, file.readline())
 
             if show_vid:
                 cv2.imshow(str(p), im0)

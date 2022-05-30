@@ -11,6 +11,7 @@ def test_is_title_free():
                    f' box_width INTEGER,'
                    f' box_height INTEGER);')
     connection.commit()
-    assert is_title_free(title='test_table') == False
+    assert not is_title_free(title='test_table')
+
 
 cursor.execute('DROP TABLE tables.test_table;')
