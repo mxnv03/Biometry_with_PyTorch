@@ -8,7 +8,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=123456789
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=biometry
+      - POSTGRES_DB=biometry_output
     volumes:
       - pg_project:/var/lib/postgresql/data
     ports:
