@@ -3,7 +3,7 @@ import shutil
 import threading
 import time
 from bd_connection import connection_check
-from video_title import get_video_title
+from video_title import get_yt_video_title, get_video_title
 import cv2
 from flask import Flask, render_template, Response, request, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -57,14 +57,14 @@ def index():
     if request.method == 'POST':
         if request.form.get("YoutubeGet"):
             youtube = request.form.get("youtube")
-            title = get_video_title(youtube)
+            title = get_yt_video_title(youtube)
             file_title.write(title)
             if connection_check():
                 create_new_table(title)
             return redirect(url_for(f'watch', video={youtube}, url=True), 301)
         elif request.form.get("FileGet"):
             file = request.files['file']
-            filename_for_bd = file.filename.split()[0]
+            filename_for_bd = get_video_title(file.filename)
             if connection_check():
                 create_new_table(filename_for_bd)
             filename = secure_filename(file.filename)

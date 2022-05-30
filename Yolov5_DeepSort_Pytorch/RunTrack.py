@@ -7,7 +7,7 @@ videos = ['0',
           'https://www.youtube.com/watch?v=wDsU4H2w48k&ab_channel=MORGENSHTERN',
           '1.jpg',
           '/Photos',
-          'videoplayback.mp4'
+          'videoplayback.mp4', 'https://www.youtube.com/watch?v=XuBydGbCMLg'
           ]
 
 
@@ -16,7 +16,7 @@ def run(source=None, youtube=True, path=os.getcwd()):
     # path = 'bestv2.pt'
     path1 = 'yolov5/weights/crowdhuman_yolov5m.pt'
     # path = 'C:/Users/CL/PycharmProjects/Biometry/yolov5/runs/train/exp/weights/best1.pt'
-    source = videos[6] if source is None else source
+    source = videos[7] if source is None else source
     if youtube == 'False' or youtube == False:
         source = path + '/Videos/' + source
     print(source)

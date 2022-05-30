@@ -264,9 +264,8 @@ def detect(opt):
 
             cv2.imwrite(os.path.join('Photos', str(filename) + '.jpg'), im0)
             filename += 1
+            print(filename)
             cv2.waitKey(1)  # 1 millisecond
-            # dbItem is 2-d list
-            # It consist of Video-Id, time, frame, face-index, box-x, box-y, box-width, box-height
             if dbItem:
                 file = open('title.txt', 'r')
                 write(dbItem, file.readline())
