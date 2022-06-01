@@ -13,3 +13,5 @@ Web-service with face detecting 👽
 3. pip install -r requiirements.txt
 4. python run app.py
 
+
+🗂DOCUMENTATION: Documentation.docx
