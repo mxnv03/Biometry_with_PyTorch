@@ -3,7 +3,7 @@ from youtube_dl import YoutubeDL
 
 def delete_symbols(s):
     symbols_for_deleting = [',', '&', '?', '[', ']', '{', '}', '/', '.',
-                            '*', ':', ';', "'", '"', "#", "@", '!', "=", '+', '—', '-', '№']
+                            '*', ':', ';', "'", '"', "#", "@", '!', "=", '+', '—', '-', '№', '(', ')']
     new_s = ''
     for i in range(len(s)):
         if s[i] not in symbols_for_deleting:
